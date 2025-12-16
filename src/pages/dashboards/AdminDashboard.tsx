@@ -7,9 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { UserRoleManager } from '@/components/admin/UserRoleManager';
 import { 
   Cpu, DollarSign, Shield, Users, Settings, 
-  Activity, FileText, UserPlus, RefreshCw 
+  Activity, FileText, RefreshCw 
 } from 'lucide-react';
 
 interface AuditLog {
@@ -222,31 +223,8 @@ export default function AdminDashboard() {
           </div>
         </GlassCard>
 
-        {/* User Provisioning */}
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Users className="w-5 h-5 text-quantum-purple" />
-            User Provisioning
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button variant="outline" className="h-auto py-4 flex flex-col gap-2">
-              <UserPlus className="w-6 h-6 text-quantum-cyan" />
-              <span>Create Operator</span>
-              <span className="text-xs text-muted-foreground">Full quantum access</span>
-            </Button>
-            <Button variant="outline" className="h-auto py-4 flex flex-col gap-2">
-              <UserPlus className="w-6 h-6 text-green-500" />
-              <span>Verify Volunteer</span>
-              <span className="text-xs text-muted-foreground">Field unit access</span>
-            </Button>
-            <Button variant="outline" className="h-auto py-4 flex flex-col gap-2">
-              <Shield className="w-6 h-6 text-quantum-purple" />
-              <span>Review Credentials</span>
-              <span className="text-xs text-muted-foreground">Security audit</span>
-            </Button>
-          </div>
-        </GlassCard>
+        {/* User Role Management */}
+        <UserRoleManager />
       </div>
     </Layout>
   );
