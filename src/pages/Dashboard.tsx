@@ -19,65 +19,65 @@ const recentOperations = [
   {
     id: 1,
     type: "Fleet Dispatch",
-    location: "Sector 7-Alpha",
+    location: "MG Road, Bangalore",
     status: "active",
     time: "2 min ago",
   },
   {
     id: 2,
     type: "Resource Drop",
-    location: "Shelter B-12",
+    location: "Cubbon Park Shelter",
     status: "completed",
     time: "8 min ago",
   },
   {
     id: 3,
     type: "Evacuation Route",
-    location: "Highway 101-N",
+    location: "Outer Ring Road",
     status: "processing",
     time: "15 min ago",
   },
   {
     id: 4,
     type: "Grid Repair",
-    location: "Substation 4",
+    location: "Koramangala Substation",
     status: "warning",
     time: "23 min ago",
   },
 ];
 
 const activeAlerts = [
-  { id: 1, level: "critical", message: "Flash flood warning - Zone 3", time: "5m" },
-  { id: 2, level: "warning", message: "Power grid at 15% capacity", time: "12m" },
-  { id: 3, level: "info", message: "New satellite imagery available", time: "18m" },
+  { id: 1, level: "critical", message: "Flash flood warning - Majestic Area", time: "5m" },
+  { id: 2, level: "warning", message: "Power grid at 15% - Whitefield", time: "12m" },
+  { id: 3, level: "info", message: "New satellite imagery - Electronic City", time: "18m" },
 ];
 
 const mapMarkers = [
-  // All markers tightly clustered around MG Road area
-  // Vehicles
-  { id: "v1", lng: 77.6070, lat: 12.9750, type: "vehicle" as const, label: "Alpha-7" },
-  { id: "v2", lng: 77.6085, lat: 12.9745, type: "vehicle" as const, label: "Bravo-3" },
-  { id: "v3", lng: 77.6060, lat: 12.9740, type: "vehicle" as const, label: "Charlie-2" },
-  { id: "v4", lng: 77.6095, lat: 12.9755, type: "vehicle" as const, label: "Delta-5" },
-  { id: "v5", lng: 77.6075, lat: 12.9735, type: "vehicle" as const, label: "Echo-1" },
-  { id: "v6", lng: 77.6050, lat: 12.9760, type: "vehicle" as const, label: "Foxtrot-4" },
-  // Shelters
-  { id: "s1", lng: 77.6080, lat: 12.9765, type: "shelter" as const, label: "MG Road Shelter (45/100)" },
-  { id: "s2", lng: 77.6055, lat: 12.9752, type: "shelter" as const, label: "Brigade Shelter (78/150)" },
-  { id: "s3", lng: 77.6100, lat: 12.9738, type: "shelter" as const, label: "Trinity Shelter (60/120)" },
-  { id: "s4", lng: 77.6065, lat: 12.9770, type: "shelter" as const, label: "Church St Shelter (32/80)" },
-  // Alerts
-  { id: "a1", lng: 77.6090, lat: 12.9742, type: "alert" as const, label: "Waterlogging Alert" },
-  { id: "a2", lng: 77.6045, lat: 12.9758, type: "alert" as const, label: "Traffic Block" },
-  { id: "a3", lng: 77.6072, lat: 12.9768, type: "alert" as const, label: "Power Outage" },
-  { id: "a4", lng: 77.6058, lat: 12.9732, type: "alert" as const, label: "Medical Emergency" },
-  { id: "a5", lng: 77.6088, lat: 12.9762, type: "alert" as const, label: "Fire Alert" },
-  // Resources
-  { id: "r1", lng: 77.6068, lat: 12.9748, type: "resource" as const, label: "Supply Depot" },
-  { id: "r2", lng: 77.6052, lat: 12.9745, type: "resource" as const, label: "Medical Camp" },
-  { id: "r3", lng: 77.6092, lat: 12.9750, type: "resource" as const, label: "Water Station" },
-  { id: "r4", lng: 77.6078, lat: 12.9758, type: "resource" as const, label: "Food Center" },
-  { id: "r5", lng: 77.6062, lat: 12.9762, type: "resource" as const, label: "Aid Station" },
+  // All markers in Bangalore MG Road / Brigade Road area
+  // Vehicles - KA registration numbers
+  { id: "v1", lng: 77.6070, lat: 12.9750, type: "vehicle" as const, label: "KA-01-MG-7001 (MG Road)" },
+  { id: "v2", lng: 77.6085, lat: 12.9745, type: "vehicle" as const, label: "KA-01-BR-3002 (Brigade Rd)" },
+  { id: "v3", lng: 77.6060, lat: 12.9740, type: "vehicle" as const, label: "KA-01-CB-2003 (Cubbon Park)" },
+  { id: "v4", lng: 77.6095, lat: 12.9755, type: "vehicle" as const, label: "KA-01-TR-5004 (Trinity Circle)" },
+  { id: "v5", lng: 77.6075, lat: 12.9735, type: "vehicle" as const, label: "KA-01-RS-1005 (Residency Rd)" },
+  { id: "v6", lng: 77.6050, lat: 12.9760, type: "vehicle" as const, label: "KA-01-CH-4006 (Church St)" },
+  // Shelters - Bangalore locations
+  { id: "s1", lng: 77.6080, lat: 12.9765, type: "shelter" as const, label: "MG Road Relief Center (45/100)" },
+  { id: "s2", lng: 77.6055, lat: 12.9752, type: "shelter" as const, label: "Brigade Road Shelter (78/150)" },
+  { id: "s3", lng: 77.6100, lat: 12.9738, type: "shelter" as const, label: "Trinity Circle Camp (60/120)" },
+  { id: "s4", lng: 77.6065, lat: 12.9770, type: "shelter" as const, label: "Church Street Shelter (32/80)" },
+  // Alerts - Bangalore specific
+  { id: "a1", lng: 77.6090, lat: 12.9742, type: "alert" as const, label: "Waterlogging - Commercial St" },
+  { id: "a2", lng: 77.6045, lat: 12.9758, type: "alert" as const, label: "Traffic Block - Kasturba Rd" },
+  { id: "a3", lng: 77.6072, lat: 12.9768, type: "alert" as const, label: "Power Outage - Lavelle Rd" },
+  { id: "a4", lng: 77.6058, lat: 12.9732, type: "alert" as const, label: "Medical Emergency - Vittal Mallya" },
+  { id: "a5", lng: 77.6088, lat: 12.9762, type: "alert" as const, label: "Fire Alert - Museum Rd" },
+  // Resources - Bangalore locations
+  { id: "r1", lng: 77.6068, lat: 12.9748, type: "resource" as const, label: "Supply Depot - Garuda Mall" },
+  { id: "r2", lng: 77.6052, lat: 12.9745, type: "resource" as const, label: "Medical Camp - Manipal Center" },
+  { id: "r3", lng: 77.6092, lat: 12.9750, type: "resource" as const, label: "Water Station - UB City" },
+  { id: "r4", lng: 77.6078, lat: 12.9758, type: "resource" as const, label: "Food Center - Forum Mall" },
+  { id: "r5", lng: 77.6062, lat: 12.9762, type: "resource" as const, label: "Aid Station - Chinnaswamy Stadium" },
 ];
 
 export default function Dashboard() {
