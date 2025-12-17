@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { OperationsMap } from './OperationsMap';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
 import { Map, RefreshCw } from 'lucide-react';
 
 interface MapMarker {
@@ -32,7 +30,6 @@ export function SharedOperationsMap({
   height = 'h-80',
   title = 'Operations Map'
 }: SharedOperationsMapProps) {
-  const [mapboxToken, setMapboxToken] = useState(() => localStorage.getItem('mapbox_token') || '');
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -82,7 +79,6 @@ export function SharedOperationsMap({
     setLoading(true);
     const newMarkers: MapMarker[] = [];
 
-    // Fetch vehicles
     if (showVehicles) {
       const { data: vehicles } = await supabase
         .from('fleet_vehicles')
@@ -103,7 +99,6 @@ export function SharedOperationsMap({
       });
     }
 
-    // Fetch shelters
     if (showShelters) {
       const { data: shelters } = await supabase
         .from('shelters')
@@ -120,7 +115,6 @@ export function SharedOperationsMap({
       });
     }
 
-    // Fetch SOS requests
     if (showSOS) {
       const { data: sosRequests } = await supabase
         .from('sos_requests')
@@ -141,7 +135,6 @@ export function SharedOperationsMap({
       });
     }
 
-    // Fetch volunteers
     if (showVolunteers) {
       const { data: volunteers } = await supabase
         .from('volunteer_assignments')
@@ -166,12 +159,6 @@ export function SharedOperationsMap({
     setLoading(false);
   };
 
-  const saveToken = (token: string) => {
-    localStorage.setItem('mapbox_token', token);
-    setMapboxToken(token);
-    toast.success('Mapbox token saved');
-  };
-
   return (
     <GlassCard className="p-4" variant="quantum">
       <div className="flex items-center justify-between mb-4">
@@ -179,39 +166,13 @@ export function SharedOperationsMap({
           <Map className="w-5 h-5 text-quantum-cyan" />
           {title}
         </h3>
-        <div className="flex items-center gap-2">
-          {!mapboxToken && (
-            <>
-              <Input
-                type="text"
-                placeholder="Enter Mapbox token..."
-                className="w-64 bg-secondary/50 text-sm"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    saveToken((e.target as HTMLInputElement).value);
-                  }
-                }}
-              />
-              <Button 
-                size="sm" 
-                variant="outline"
-                onClick={(e) => {
-                  const input = (e.target as HTMLElement).previousElementSibling as HTMLInputElement;
-                  if (input?.value) saveToken(input.value);
-                }}
-              >
-                Save
-              </Button>
-            </>
-          )}
-          <Button size="sm" variant="ghost" onClick={fetchMapData} disabled={loading}>
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          </Button>
-        </div>
+        <Button size="sm" variant="ghost" onClick={fetchMapData} disabled={loading}>
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+        </Button>
       </div>
 
       <div className={`${height} rounded-lg overflow-hidden border border-border/30`}>
-        <OperationsMap mapboxToken={mapboxToken} markers={markers} />
+        <OperationsMap markers={markers} />
       </div>
 
       <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground flex-wrap">

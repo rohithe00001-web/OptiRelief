@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Truck,
@@ -9,8 +8,6 @@ import {
   MapPin,
   Clock,
   CheckCircle2,
-  Key,
-  ExternalLink,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { MetricCard } from "@/components/ui/MetricCard";
@@ -65,21 +62,6 @@ const mapMarkers = [
 ];
 
 export default function Dashboard() {
-  const [mapboxToken, setMapboxToken] = useState("");
-  const [showTokenInput, setShowTokenInput] = useState(false);
-
-  // Load token from localStorage
-  useEffect(() => {
-    const savedToken = localStorage.getItem("mapbox_token");
-    if (savedToken) {
-      setMapboxToken(savedToken);
-    }
-  }, []);
-
-  const handleSaveToken = () => {
-    localStorage.setItem("mapbox_token", mapboxToken);
-    setShowTokenInput(false);
-  };
 
   return (
     <Layout>
@@ -152,60 +134,11 @@ export default function Dashboard() {
                   Live fleet and resource positioning
                 </p>
               </div>
-              <div className="flex items-center gap-3">
-                <StatusIndicator status={mapboxToken ? "online" : "offline"} label={mapboxToken ? "Live" : "Offline"} />
-                <button
-                  onClick={() => setShowTokenInput(!showTokenInput)}
-                  className="p-2 rounded-lg hover:bg-secondary/50 transition-colors"
-                  title="Configure Mapbox Token"
-                >
-                  <Key className="w-4 h-4 text-muted-foreground" />
-                </button>
-              </div>
+              <StatusIndicator status="online" label="Live" />
             </div>
-            
-            {/* Token Input */}
-            {showTokenInput && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="p-4 border-b border-border bg-secondary/30"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex-1">
-                    <label className="text-xs text-muted-foreground mb-1 block">
-                      Mapbox Public Token
-                    </label>
-                    <input
-                      type="text"
-                      value={mapboxToken}
-                      onChange={(e) => setMapboxToken(e.target.value)}
-                      placeholder="pk.eyJ1Ijoi..."
-                      className="w-full h-9 px-3 bg-background border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                    />
-                  </div>
-                  <button
-                    onClick={handleSaveToken}
-                    className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium mt-5"
-                  >
-                    Save
-                  </button>
-                </div>
-                <a
-                  href="https://account.mapbox.com/access-tokens/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-2"
-                >
-                  Get your token from Mapbox
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </motion.div>
-            )}
 
             <div className="relative h-80">
-              <OperationsMap mapboxToken={mapboxToken} markers={mapMarkers} />
+              <OperationsMap markers={mapMarkers} />
             </div>
           </GlassCard>
 
