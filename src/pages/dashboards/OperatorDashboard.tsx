@@ -9,13 +9,14 @@ import { Input } from '@/components/ui/input';
 import { QuantumLoader } from '@/components/ui/QuantumLoader';
 import { OperationsMap } from '@/components/map/OperationsMap';
 import { FleetManager } from '@/components/fleet/FleetManager';
+import { ShelterManager } from '@/components/shelter/ShelterManager';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { 
   Play, Sliders, 
   Truck, Users, AlertTriangle, Zap,
-  BarChart3, RefreshCw, ArrowUp, ArrowDown, Map
+  BarChart3, RefreshCw, ArrowUp, ArrowDown, Map, Building2
 } from 'lucide-react';
 
 interface SOSRequest {
@@ -55,6 +56,16 @@ interface FleetVehicle {
   current_location: { lat: number; lng: number } | null;
 }
 
+interface Shelter {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  status: string;
+  current_occupancy: number;
+  capacity: number;
+}
+
 export default function OperatorDashboard() {
   const { user } = useAuth();
   const [isOptimizing, setIsOptimizing] = useState(false);
@@ -69,6 +80,7 @@ export default function OperatorDashboard() {
   const [sosRequests, setSosRequests] = useState<SOSRequest[]>([]);
   const [volunteerLocations, setVolunteerLocations] = useState<VolunteerLocation[]>([]);
   const [fleetVehicles, setFleetVehicles] = useState<FleetVehicle[]>([]);
+  const [shelters, setShelters] = useState<Shelter[]>([]);
   const [mapboxToken, setMapboxToken] = useState(() => localStorage.getItem('mapbox_token') || '');
   const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]);
   const [routes, setRoutes] = useState<RouteOverride[]>([
@@ -82,6 +94,7 @@ export default function OperatorDashboard() {
     fetchSOSRequests();
     fetchVolunteerLocations();
     fetchFleetVehicles();
+    fetchShelters();
 
     // Subscribe to real-time SOS updates
     const sosChannel = supabase
@@ -110,10 +123,20 @@ export default function OperatorDashboard() {
       })
       .subscribe();
 
+    // Subscribe to real-time shelter updates
+    const shelterChannel = supabase
+      .channel('shelter_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'shelters' }, () => {
+        fetchShelters();
+        fetchStats();
+      })
+      .subscribe();
+
     return () => {
       supabase.removeChannel(sosChannel);
       supabase.removeChannel(volunteerChannel);
       supabase.removeChannel(fleetChannel);
+      supabase.removeChannel(shelterChannel);
     };
   }, []);
 
@@ -135,10 +158,16 @@ export default function OperatorDashboard() {
       .from('resource_requests')
       .select('*', { count: 'exact', head: true });
 
+    // Fetch active shelters count
+    const { count: shelterCount } = await supabase
+      .from('shelters')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'open');
+
     setStats({
       activeVehicles: volunteerCount || 0,
       pendingSOS: sosCount || 0,
-      sheltersActive: 8, // Static for now
+      sheltersActive: shelterCount || 0,
       resourcesDeployed: resourceCount || 0
     });
   };
@@ -185,7 +214,17 @@ export default function OperatorDashboard() {
     }
   };
 
-  // Build map markers from SOS requests, volunteer locations, and fleet vehicles
+  const fetchShelters = async () => {
+    const { data } = await supabase
+      .from('shelters')
+      .select('id, name, latitude, longitude, status, current_occupancy, capacity');
+
+    if (data) {
+      setShelters(data);
+    }
+  };
+
+  // Build map markers from SOS requests, volunteer locations, fleet vehicles, and shelters
   useEffect(() => {
     const markers: MapMarker[] = [];
 
@@ -231,8 +270,19 @@ export default function OperatorDashboard() {
       }
     });
 
+    // Add shelter markers
+    shelters.forEach((shelter) => {
+      markers.push({
+        id: `shelter-${shelter.id}`,
+        lat: Number(shelter.latitude),
+        lng: Number(shelter.longitude),
+        type: 'shelter',
+        label: `${shelter.name} (${shelter.current_occupancy}/${shelter.capacity})`
+      });
+    });
+
     setMapMarkers(markers);
-  }, [sosRequests, volunteerLocations, fleetVehicles]);
+  }, [sosRequests, volunteerLocations, fleetVehicles, shelters]);
 
   const saveMapboxToken = (token: string) => {
     localStorage.setItem('mapbox_token', token);
@@ -434,6 +484,9 @@ export default function OperatorDashboard() {
               <span className="w-3 h-3 rounded-full bg-[#00d9ff]" /> Fleet Vehicles
             </span>
             <span className="flex items-center gap-1">
+              <span className="w-3 h-3 rounded-full bg-[#22c55e]" /> Shelters
+            </span>
+            <span className="flex items-center gap-1">
               <span className="w-3 h-3 rounded-full bg-[#a855f7]" /> Volunteers
             </span>
           </div>
@@ -459,9 +512,9 @@ export default function OperatorDashboard() {
           <MetricCard
             label="Shelters Active"
             value={stats.sheltersActive}
-            icon={Users}
+            icon={Building2}
             trend="up"
-            subValue="Receiving victims"
+            subValue="Open shelters"
           />
           <MetricCard
             label="Resource Requests"
@@ -634,8 +687,11 @@ export default function OperatorDashboard() {
           </GlassCard>
         </div>
 
-        {/* Fleet Management */}
-        <FleetManager />
+        {/* Fleet & Shelter Management */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <FleetManager />
+          <ShelterManager />
+        </div>
 
       </div>
     </Layout>
