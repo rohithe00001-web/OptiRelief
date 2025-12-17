@@ -90,13 +90,14 @@ export function FleetManager({ compact = false }: FleetManagerProps) {
       return;
     }
 
+    // Default location: Bangalore area (MG Road vicinity)
     const { error } = await supabase.from('fleet_vehicles').insert({
       vehicle_number: formData.vehicle_number,
       vehicle_type: formData.vehicle_type,
       status: formData.status,
       capacity: formData.capacity,
       fuel_level: formData.fuel_level,
-      current_location: { lat: 28.6139 + (Math.random() - 0.5) * 2, lng: 77.2090 + (Math.random() - 0.5) * 2 }
+      current_location: { lat: 12.9750 + (Math.random() - 0.5) * 0.02, lng: 77.6070 + (Math.random() - 0.5) * 0.02 }
     });
 
     if (error) {

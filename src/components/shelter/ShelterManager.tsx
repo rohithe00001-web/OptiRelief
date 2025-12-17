@@ -243,7 +243,7 @@ export function ShelterManager({ onSheltersChange }: ShelterManagerProps) {
                     step="any"
                     value={formData.latitude}
                     onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
-                    placeholder="e.g. 28.6139"
+                    placeholder="e.g. 12.9750"
                     required
                   />
                 </div>
@@ -254,7 +254,7 @@ export function ShelterManager({ onSheltersChange }: ShelterManagerProps) {
                     step="any"
                     value={formData.longitude}
                     onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
-                    placeholder="e.g. 77.2090"
+                    placeholder="e.g. 77.6070"
                     required
                   />
                 </div>
