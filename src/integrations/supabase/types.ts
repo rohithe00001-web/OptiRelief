@@ -256,6 +256,51 @@ export type Database = {
           },
         ]
       }
+      shelters: {
+        Row: {
+          address: string | null
+          amenities: string[] | null
+          capacity: number
+          contact_phone: string | null
+          created_at: string
+          current_occupancy: number
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          amenities?: string[] | null
+          capacity?: number
+          contact_phone?: string | null
+          created_at?: string
+          current_occupancy?: number
+          id?: string
+          latitude: number
+          longitude: number
+          name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          amenities?: string[] | null
+          capacity?: number
+          contact_phone?: string | null
+          created_at?: string
+          current_occupancy?: number
+          id?: string
+          latitude?: number
+          longitude?: number
+          name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sos_requests: {
         Row: {
           assigned_volunteer_id: string | null
