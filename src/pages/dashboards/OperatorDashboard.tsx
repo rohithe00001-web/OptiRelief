@@ -82,7 +82,6 @@ export default function OperatorDashboard() {
   const [volunteerLocations, setVolunteerLocations] = useState<VolunteerLocation[]>([]);
   const [fleetVehicles, setFleetVehicles] = useState<FleetVehicle[]>([]);
   const [shelters, setShelters] = useState<Shelter[]>([]);
-  const [mapboxToken, setMapboxToken] = useState(() => localStorage.getItem('mapbox_token') || '');
   const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]);
   const [routes, setRoutes] = useState<RouteOverride[]>([
     { id: '1', name: 'Highway 101 - North', status: 'blocked', priority: 'high' },
@@ -285,11 +284,6 @@ export default function OperatorDashboard() {
     setMapMarkers(markers);
   }, [sosRequests, volunteerLocations, fleetVehicles, shelters]);
 
-  const saveMapboxToken = (token: string) => {
-    localStorage.setItem('mapbox_token', token);
-    setMapboxToken(token);
-    toast({ title: 'Token Saved', description: 'Mapbox token stored successfully' });
-  };
 
   const executeQuantumOptimization = async (type: string, algorithm: string) => {
     if (!user) return;
@@ -449,33 +443,9 @@ export default function OperatorDashboard() {
               <Map className="w-5 h-5 text-quantum-cyan" />
               Real-time Operations Map
             </h3>
-            {!mapboxToken && (
-              <div className="flex items-center gap-2">
-                <Input
-                  type="text"
-                  placeholder="Enter Mapbox token..."
-                  className="w-64 bg-secondary/50 text-sm"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      saveMapboxToken((e.target as HTMLInputElement).value);
-                    }
-                  }}
-                />
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={(e) => {
-                    const input = (e.target as HTMLElement).previousElementSibling as HTMLInputElement;
-                    if (input?.value) saveMapboxToken(input.value);
-                  }}
-                >
-                  Save
-                </Button>
-              </div>
-            )}
           </div>
           <div className="h-80 rounded-lg overflow-hidden border border-border/30">
-            <OperationsMap mapboxToken={mapboxToken} markers={mapMarkers} />
+            <OperationsMap markers={mapMarkers} />
           </div>
           <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
