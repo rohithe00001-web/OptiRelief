@@ -53,12 +53,12 @@ const activeAlerts = [
 ];
 
 const mapMarkers = [
-  { id: "v1", lng: -118.2437, lat: 34.0522, type: "vehicle" as const, label: "Alpha-7 En Route" },
-  { id: "v2", lng: -122.4194, lat: 37.7749, type: "vehicle" as const, label: "Bravo-3 Active" },
-  { id: "s1", lng: -117.1611, lat: 32.7157, type: "shelter" as const, label: "Emergency Shelter A" },
-  { id: "s2", lng: -121.8863, lat: 37.3382, type: "shelter" as const, label: "Community Center" },
-  { id: "a1", lng: -119.4179, lat: 36.7783, type: "alert" as const, label: "Flash Flood Zone" },
-  { id: "r1", lng: -116.2023, lat: 33.8303, type: "resource" as const, label: "Supply Depot" },
+  { id: "v1", lng: 77.5946, lat: 12.9716, type: "vehicle" as const, label: "Alpha-7 MG Road" },
+  { id: "v2", lng: 77.6245, lat: 12.9352, type: "vehicle" as const, label: "Bravo-3 Koramangala" },
+  { id: "s1", lng: 77.5800, lat: 12.9850, type: "shelter" as const, label: "Malleshwaram Shelter" },
+  { id: "s2", lng: 77.6410, lat: 12.9698, type: "shelter" as const, label: "Indiranagar Community Center" },
+  { id: "a1", lng: 77.5500, lat: 12.9500, type: "alert" as const, label: "Flood Alert - Rajajinagar" },
+  { id: "r1", lng: 77.6100, lat: 13.0200, type: "resource" as const, label: "Hebbal Supply Depot" },
 ];
 
 export default function Dashboard() {
