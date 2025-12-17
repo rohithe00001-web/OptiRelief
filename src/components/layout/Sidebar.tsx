@@ -12,18 +12,24 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StatusIndicator } from "@/components/ui/StatusIndicator";
+import { useAuth } from "@/hooks/useAuth";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Command Center", path: "/" },
-  { icon: Route, label: "Fleet Routing", path: "/routing" },
-  { icon: Package, label: "Resource Allocation", path: "/resources" },
-  { icon: Car, label: "Evacuation Flow", path: "/evacuation" },
-  { icon: Zap, label: "Grid Recovery", path: "/grid" },
-  { icon: ScanLine, label: "Q-Vision Analysis", path: "/qvision" },
+  { icon: LayoutDashboard, label: "Command Center", path: "/", roles: ["admin", "operator", "volunteer", "user"] },
+  { icon: Route, label: "Fleet Routing", path: "/routing", roles: ["admin", "operator", "volunteer"] },
+  { icon: Package, label: "Resource Allocation", path: "/resources", roles: ["admin", "operator", "volunteer"] },
+  { icon: Car, label: "Evacuation Flow", path: "/evacuation", roles: ["admin", "operator", "volunteer"] },
+  { icon: Zap, label: "Grid Recovery", path: "/grid", roles: ["admin", "operator", "volunteer"] },
+  { icon: ScanLine, label: "Q-Vision Analysis", path: "/qvision", roles: ["admin", "operator", "volunteer"] },
 ];
 
 export function Sidebar() {
   const location = useLocation();
+  const { role } = useAuth();
+  
+  const filteredNavItems = navItems.filter(item => 
+    item.roles.includes(role || "user")
+  );
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border flex flex-col z-50">
@@ -74,7 +80,7 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
+        {filteredNavItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <NavLink
