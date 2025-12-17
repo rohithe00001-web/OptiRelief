@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { QuantumLoader } from '@/components/ui/QuantumLoader';
+import { ShelterLocator } from '@/components/shelter/ShelterLocator';
 import { 
   AlertCircle, Clock, MapPin, Droplets, 
   Pill, Baby, Package, CheckCircle,
@@ -494,6 +495,9 @@ export default function UserDashboard() {
             <span className="text-lg font-medium">Call 112 (Emergency)</span>
           </Button>
         </GlassCard>
+
+        {/* Shelter Locator */}
+        <ShelterLocator />
       </div>
     </Layout>
   );
