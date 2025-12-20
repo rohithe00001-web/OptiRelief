@@ -124,18 +124,82 @@ export default function UserDashboard() {
     setIsSubmitting(true);
 
     try {
-      // Get current location
-      let location = { lat: 37.0902, lng: -95.7129 }; // Default
+      // Get current location with proper permission handling
+      let location: { lat: number; lng: number } | null = null;
       
       if (navigator.geolocation) {
         try {
+          // Check if permission is already granted
+          if (navigator.permissions) {
+            const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+            if (permissionStatus.state === 'denied') {
+              toast({
+                title: 'Location Access Required',
+                description: 'Please enable location access in your browser settings to send an SOS.',
+                variant: 'destructive'
+              });
+              setIsSubmitting(false);
+              return;
+            }
+          }
+
           const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+            navigator.geolocation.getCurrentPosition(
+              resolve, 
+              reject, 
+              { 
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+              }
+            );
           });
           location = { lat: position.coords.latitude, lng: position.coords.longitude };
-        } catch (e) {
-          console.log('Using default location');
+        } catch (e: any) {
+          if (e.code === 1) { // PERMISSION_DENIED
+            toast({
+              title: 'Location Permission Denied',
+              description: 'Please allow location access to send an SOS. Check your browser or device settings.',
+              variant: 'destructive'
+            });
+            setIsSubmitting(false);
+            return;
+          } else if (e.code === 2) { // POSITION_UNAVAILABLE
+            toast({
+              title: 'Location Unavailable',
+              description: 'Could not determine your location. Please ensure GPS is enabled.',
+              variant: 'destructive'
+            });
+            setIsSubmitting(false);
+            return;
+          } else if (e.code === 3) { // TIMEOUT
+            toast({
+              title: 'Location Timeout',
+              description: 'Getting your location took too long. Please try again.',
+              variant: 'destructive'
+            });
+            setIsSubmitting(false);
+            return;
+          }
         }
+      } else {
+        toast({
+          title: 'Geolocation Not Supported',
+          description: 'Your browser does not support location services.',
+          variant: 'destructive'
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!location) {
+        toast({
+          title: 'Location Required',
+          description: 'Could not get your location. Please enable location services and try again.',
+          variant: 'destructive'
+        });
+        setIsSubmitting(false);
+        return;
       }
 
       // Create SOS request
